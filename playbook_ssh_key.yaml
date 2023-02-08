@@ -1,0 +1,30 @@
+---
+- hosts: ubuntu-server
+  gather_facts: false
+  become: true
+    #become_method=sudo
+    #become_user=root
+    #become_ask_pass=False
+
+    # Запрашиваем логин и пароль от удалённого хоста для подключения по SSH из зашифрованного файла vars.yaml 
+  vars_files:
+    - vars.yml
+
+    # Создание пользователя 
+    # Описание модуля user: https://docs.ansible.com/ansible/2.8/modules/user_module.html#user-module
+  tasks: 
+    - name: Add a new user named provision
+      user:
+        name: provision
+        password: "{{ provision_password }}"
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+
+     # Создание 2048-битового SSH ключа для provision в ~/.ssh/id_rsa
+    - name: Add generate_ssh_key
+      user:
+        name: provision
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa

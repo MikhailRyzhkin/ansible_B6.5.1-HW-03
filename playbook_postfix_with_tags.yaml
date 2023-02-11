@@ -15,7 +15,7 @@
       debconf: 
         name: postifx 
         question: "postfix/mailname" 
-        value: "{{ansible_fqdn}}" 
+        value: "postfix-server" 
         vtype: "string"
       tags:
       - init_postfix
@@ -36,7 +36,7 @@
       apt: 
       apt: 
         name: "{{ packages }}"
-        state: installed 
+        state: latest 
       vars:
         packages:
         - postfix
@@ -64,7 +64,7 @@
 
     # Удаляем в файерволе разрешающее правило работы демона postfix
     # Описание модуля community.general.ufw: https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
-    - name: Setting firewalld - ufw for postfix at ubuntu
+    - name: Remove firewalld - ufw for postfix at ubuntu
       community.general.ufw:
         rule: reject
         name: postfix
@@ -73,7 +73,7 @@
 
     # Удаление postfix и mailutils
     # Описание модуля apt: https://docs.ansible.com/ansible/2.8/modules/apt_module.html#apt-module
-    - name: Install Postfix
+    - name: Remove Postfix
       apt: 
         name: "{{ packages }}"
         state: absent
